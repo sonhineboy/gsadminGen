@@ -4,9 +4,9 @@ import "github.com/sonhineboy/gsadmin/service/global"
 
 type Test struct {
 	*global.GAD_MODEL
-	Id    int    `gorm:"column:id;primaryKey;autoIncrement;comment:Id;" json:id`
-	UserName    string    `gorm:"column:user_name;index:user_name,fulltext;comment:用户名;" json:user_name`
-	Age    int    `gorm:"column:age;default:0;comment:年龄;" json:age`
+	Id             int       `gorm:"column:id;primaryKey;autoIncrement;comment:Id;" json:"id"`
+	UserName       string    `gorm:"column:user_name;index:user_name,class:fulltext;comment:用户名;" json:"user_name"`
+	Age            int       `gorm:"column:age;default:0;comment:年龄;" json:"age"`
 	
 }
 

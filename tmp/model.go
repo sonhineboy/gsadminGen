@@ -1,6 +1,6 @@
 package tmp
 
-func GetSub() string {
+func GetModelSub() string {
 
 	return `package models
 
@@ -8,7 +8,7 @@ import "github.com/sonhineboy/gsadmin/service/global"
 
 type {{.Name | Title}} struct {
 	*global.GAD_MODEL
-	{{range .Fields}}{{. | TransFieldAll}}
+	{{range .Fields}}{{ . | TransFieldAll}}
 	{{end}}
 }
 

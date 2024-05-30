@@ -9,7 +9,7 @@ import (
 
 func TestTitle(t *testing.T) {
 
-	//fmt.Sprintf("%04s", "900")
+	fmt.Println(fmt.Sprintf("%-5saaaa", "4563asdfasf"))
 
 }
 

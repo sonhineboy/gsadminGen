@@ -30,11 +30,24 @@ type TableModal struct {
 // GenModel 生成模型结构体
 func GenModel(wr io.Writer, v TableModal) error {
 
-	MyFunc := template.FuncMap{
+	myFunc := template.FuncMap{
 		"Title":         strings.Title,
 		"TransFieldAll": TransFieldAll,
 	}
-	tmpl, err := template.New("model.sub").Funcs(MyFunc).Parse(tmp.GetSub())
+	tmpl, err := template.New("model.sub").Funcs(myFunc).Parse(tmp.GetModelSub())
+	if err != nil {
+		return err
+	}
+	err = tmpl.Execute(wr, v)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func GenController(wr io.Writer, v TableModal) error {
+	myFunc := template.FuncMap{}
+	tmpl, err := template.New("controller.sub").Funcs(myFunc).Parse(tmp.GetModelSub())
 	if err != nil {
 		return err
 	}
@@ -54,9 +67,7 @@ func ConvertToUnderScore(camelCaseName string) string {
 }
 
 // TransFieldAll 字段转换
-func TransFieldAll(field Field, maxLen int) string {
-	separator := "    "
-
+func TransFieldAll(field Field) string {
 	fieldName := ConvertToUnderScore(field.Name)
 
 	fieldType, ok := src.FieldTypeMapping[field.Type]
@@ -94,7 +105,7 @@ func TransFieldAll(field Field, maxLen int) string {
 		index = fmt.Sprint("index:", fieldName, ",unique;")
 		break
 	case "FULLTEXT":
-		index = fmt.Sprint("index:", fieldName, ",fulltext;")
+		index = fmt.Sprint("index:", fieldName, ",class:fulltext;")
 		break
 	}
 
@@ -104,10 +115,8 @@ func TransFieldAll(field Field, maxLen int) string {
 	}
 
 	fieldSlice := []string{
-		strings.Title(field.Name),
-		separator,
-		fieldType,
-		separator,
+		fmt.Sprintf("%-15s", strings.Title(field.Name)),
+		fmt.Sprintf("%-10s", fieldType),
 		"`gorm:\"column:",
 		fieldName,
 		";",
@@ -118,8 +127,9 @@ func TransFieldAll(field Field, maxLen int) string {
 		defaultVal,
 		comment,
 		"\"",
-		" json:",
+		" json:\"",
 		field.Json,
+		"\"",
 		"`",
 	}
 
