@@ -37,13 +37,7 @@ func (controller *{{.Name | Title}}Controller) Save(ctx *gin.Context) {
 	)
 	err = ctx.ShouldBind(&data)
 	if err != nil {
-		var v validator.ValidationErrors
-		ok := errors.As(err, &v)
-		if ok {
-			response.Failed(ctx, global.GetError(v, data))
-		} else {
-			response.Failed(ctx, err.Error())
-		}
+		response.Failed(ctx, global.GetError(err, data))
 		return
 	}
 
@@ -72,13 +66,7 @@ func (controller *{{.Name | Title}}Controller) Edit(ctx *gin.Context) {
 
 	err = ctx.ShouldBind(&request)
 	if err != nil {
-		var v validator.ValidationErrors
-		ok := errors.As(err, &v)
-		if ok {
-			response.Failed(ctx, global.GetError(v, request))
-		} else {
-			response.Failed(ctx, err.Error())
-		}
+		response.Failed(ctx, global.GetError(err, request))
 		return
 	}
 	rowsAffected, err = re.UpdateById(id, request)
@@ -100,13 +88,7 @@ func (controller *{{.Name | Title}}Controller) Delete(ctx *gin.Context) {
 
 	err = ctx.ShouldBind(&ids)
 	if err != nil {
-		var v validator.ValidationErrors
-		ok := errors.As(err, &v)
-		if ok {
-			response.Failed(ctx, global.GetError(v, ids))
-		} else {
-			response.Failed(ctx, err.Error())
-		}
+		response.Failed(ctx, global.GetError(err, ids))
 		return
 	}
 	rowsAffected, err = re.DelByIds(ids.Ids)
