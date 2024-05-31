@@ -22,7 +22,7 @@ func (controller *{{.Name | Title}}Controller) Index(ctx *gin.Context) {
 
 	var (
 		params global.List
-		re := repositorys.New{{.Name | Title}}Repository()
+		re = repositorys.New{{.Name | Title}}Repository()
 	)
 	_ = ctx.ShouldBind(&params)
 	response.Success(ctx, "ok", re.Page(params.Where, params.Page, params.PageSize, "created_at"))

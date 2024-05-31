@@ -122,7 +122,7 @@ func TransRequest(field Field) string {
 		return ""
 	}
 
-	isNull := "binding:\"required\""
+	isNull := " binding:\"required\""
 	if field.IsNull {
 		isNull = ""
 	}
@@ -133,7 +133,7 @@ func TransRequest(field Field) string {
 		"`",
 		"json:\"",
 		field.Json,
-		"\";",
+		"\"",
 		isNull, "`",
 	)
 }

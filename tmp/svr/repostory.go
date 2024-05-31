@@ -38,7 +38,8 @@ func (re *{{.Name | Title}}Repository) UpdateById(id int, data requests.{{.Name 
 		model models.{{.Name | Title}}
 	)
 	tx := re.db.Model(&model).Where("id = ?", id).Updates(models.{{.Name | Title}}{
-		{{range .Fields}}{{ .Name | Title}}:	data.{{ .Name | Title}}
+		{{range .Fields}}
+		{{ .Name | Title}}:	data.{{ .Name | Title}},
 		{{end}}
 	})
 	return tx.RowsAffected, tx.Error
@@ -80,7 +81,7 @@ func (re *{{.Name | Title}}Repository) Page(where map[string]interface{}, page i
 func (re *{{.Name | Title}}Repository) Insert(data requests.{{.Name | Title}}Request) (model models.{{.Name | Title}}, err error) {
 
 	model = models.{{.Name | Title}}{
-		{{range .Fields}}{{ .Name | Title}}:	data.{{ .Name | Title}}
+		{{range .Fields}}{{ .Name | Title}}:	data.{{ .Name | Title}},
 		{{end}}
 	}
 
