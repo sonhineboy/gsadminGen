@@ -1,0 +1,11 @@
+package requests
+
+type DeleteUserRequest struct {
+	Ids []int `binding:"required"`
+}
+
+type UserRequest struct {
+	UserName       string    `json:"user_name";`
+	Age            int       `json:"age";binding:"required"`
+	
+}

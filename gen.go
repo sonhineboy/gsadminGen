@@ -3,8 +3,8 @@ package gsadminGen
 import (
 	"fmt"
 	"github.com/sonhineboy/gsadminGen/src"
-	"github.com/sonhineboy/gsadminGen/tmp"
-	"io"
+	"github.com/sonhineboy/gsadminGen/tmp/svr"
+	"os"
 	"regexp"
 	"strings"
 	"text/template"
@@ -28,15 +28,18 @@ type TableModal struct {
 }
 
 // GenModel 生成模型结构体
-func GenModel(wr io.Writer, v TableModal) error {
-
+func GenModel(fileName string, v TableModal) error {
 	myFunc := template.FuncMap{
 		"Title":         strings.Title,
 		"TransFieldAll": TransFieldAll,
 	}
-	tmpl, err := template.New("model.sub").Funcs(myFunc).Parse(tmp.GetModelSub())
+	tmpl, err := template.New("model.sub").Funcs(myFunc).Parse(svr.GetModelSub())
 	if err != nil {
 		return err
+	}
+	wr, err := os.Create(fileName)
+	if err != nil {
+		return nil
 	}
 	err = tmpl.Execute(wr, v)
 	if err != nil {
@@ -45,11 +48,57 @@ func GenModel(wr io.Writer, v TableModal) error {
 	return nil
 }
 
-func GenController(wr io.Writer, v TableModal) error {
-	myFunc := template.FuncMap{}
-	tmpl, err := template.New("controller.sub").Funcs(myFunc).Parse(tmp.GetModelSub())
+func GenController(fileName string, v TableModal) error {
+	myFunc := template.FuncMap{
+		"Title": strings.Title,
+	}
+	tmpl, err := template.New("controller.sub").Funcs(myFunc).Parse(svr.GetControllerSub())
 	if err != nil {
 		return err
+	}
+	wr, err := os.Create(fileName)
+	if err != nil {
+		return nil
+	}
+	err = tmpl.Execute(wr, v)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func GenRepository(fileName string, v TableModal) error {
+	myFunc := template.FuncMap{
+		"Title": strings.Title,
+	}
+	tmpl, err := template.New("repository.sub").Funcs(myFunc).Parse(svr.GetRepositorySub())
+	if err != nil {
+		return err
+	}
+	wr, err := os.Create(fileName)
+	if err != nil {
+		return nil
+	}
+	err = tmpl.Execute(wr, v)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func GenRequest(fileName string, v TableModal) error {
+	myFunc := template.FuncMap{
+		"Title": strings.Title,
+		"Del":   TransDelRequest,
+		"Trans": TransRequest,
+	}
+	tmpl, err := template.New("request.sub").Funcs(myFunc).Parse(svr.GetRequestSub())
+	if err != nil {
+		return err
+	}
+	wr, err := os.Create(fileName)
+	if err != nil {
+		return nil
 	}
 	err = tmpl.Execute(wr, v)
 	if err != nil {
@@ -64,6 +113,33 @@ func ConvertToUnderScore(camelCaseName string) string {
 	underScoreName := reg.ReplaceAllString(camelCaseName, "${1}_${2}")
 	underScoreName = strings.ToLower(underScoreName)
 	return underScoreName
+}
+
+func TransRequest(field Field) string {
+	fieldType, ok := src.FieldTypeMapping[field.Type]
+	if !ok {
+		fmt.Println("类型mapping 不存在")
+		return ""
+	}
+
+	isNull := "binding:\"required\""
+	if field.IsNull {
+		isNull = ""
+	}
+
+	return fmt.Sprint(
+		fmt.Sprintf("%-15s", strings.Title(field.Name)),
+		fmt.Sprintf("%-10s", fieldType),
+		"`",
+		"json:\"",
+		field.Json,
+		"\";",
+		isNull, "`",
+	)
+}
+
+func TransDelRequest() string {
+	return "`binding:\"required\"`"
 }
 
 // TransFieldAll 字段转换
@@ -81,7 +157,7 @@ func TransFieldAll(field Field) string {
 		primary = "primaryKey;"
 	}
 
-	isNull := ""
+	isNull := "not null"
 	if field.IsNull {
 		isNull = ""
 	}
