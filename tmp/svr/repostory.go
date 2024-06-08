@@ -11,19 +11,19 @@ import (
 	"gorm.io/gorm"
 )
 
-type {{.Name | Title}}Repository struct {
+type {{.Name | Transform}}Repository struct {
 	db *gorm.DB
 }
 
-// New{{.Name | Title}}Repository 实例化
-func New{{.Name | Title}}Repository() *{{.Name | Title}}Repository {
-	return &{{.Name | Title}}Repository{
+// New{{.Name | Transform}}Repository 实例化
+func New{{.Name | Transform}}Repository() *{{.Name | Transform}}Repository {
+	return &{{.Name | Transform}}Repository{
 		db: global.Db,
 	}
 }
 
 //FindById 根据id 查询信息
-func (re *{{.Name | Title}}Repository) FindById(id int) (models.{{.Name | Title}}, error) {
+func (re *{{.Name | Transform}}Repository) FindById(id int) (models.{{.Name | Title}}, error) {
 	var (
 		model models.{{.Name | Title}}
 	)
@@ -33,20 +33,20 @@ func (re *{{.Name | Title}}Repository) FindById(id int) (models.{{.Name | Title}
 }
 
 //UpdateById 根据id 更新信息
-func (re *{{.Name | Title}}Repository) UpdateById(id int, data requests.{{.Name | Title}}Request) (int64, error) {
+func (re *{{.Name | Transform}}Repository) UpdateById(id int, data requests.{{.Name | Title}}Request) (int64, error) {
 	var (
 		model models.{{.Name | Title}}
 	)
 	tx := re.db.Model(&model).Where("id = ?", id).Updates(models.{{.Name | Title}}{
 		{{range .Fields}}
-		{{ .Name | Title}}:	data.{{ .Name | Title}},
+		{{ .Name | Transform}}:	data.{{ .Name | Transform}},
 		{{end}}
 	})
 	return tx.RowsAffected, tx.Error
 }
 
 //DelByIds 根据id 删除数据
-func (re *{{.Name | Title}}Repository) DelByIds(ids []int) (int64, error) {
+func (re *{{.Name | Transform}}Repository) DelByIds(ids []int) (int64, error) {
 	var (
 		model models.{{.Name | Title}}
 	)
@@ -55,7 +55,7 @@ func (re *{{.Name | Title}}Repository) DelByIds(ids []int) (int64, error) {
 }
 
 //Page 返回分页数据
-func (re *{{.Name | Title}}Repository) Page(where map[string]interface{}, page int, pageSize int, sortField string) map[string]interface{} {
+func (re *{{.Name | Transform}}Repository) Page(where map[string]interface{}, page int, pageSize int, sortField string) map[string]interface{} {
 	var (
 		total  int64
 		data   []models.{{.Name | Title}}
@@ -78,10 +78,10 @@ func (re *{{.Name | Title}}Repository) Page(where map[string]interface{}, page i
 }
 
 //Insert 写入数据
-func (re *{{.Name | Title}}Repository) Insert(data requests.{{.Name | Title}}Request) (model models.{{.Name | Title}}, err error) {
+func (re *{{.Name | Transform}}Repository) Insert(data requests.{{.Name | Title}}Request) (model models.{{.Name | Title}}, err error) {
 
 	model = models.{{.Name | Title}}{
-		{{range .Fields}}{{ .Name | Title}}:	data.{{ .Name | Title}},
+		{{range .Fields}}{{ .Name | Transform}}:	data.{{ .Name | Transform}},
 		{{end}}
 	}
 

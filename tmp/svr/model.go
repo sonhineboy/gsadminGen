@@ -6,13 +6,13 @@ func GetModelSub() string {
 
 import "github.com/sonhineboy/gsadmin/service/global"
 
-type {{.Name | Title}} struct {
-	*global.GAD_MODEL
+type {{.Name | Transform}} struct {
+	global.GAD_MODEL
 	{{range .Fields}}{{ . | TransFieldAll}}
 	{{end}}
 }
 
-func (m *{{.Name | Title}}) TableName() string {
+func (m *{{.Name | Transform}}) TableName() string {
 	return "{{.Name}}"
 }
 `

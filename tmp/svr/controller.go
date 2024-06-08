@@ -2,12 +2,10 @@ package svr
 
 func GetControllerSub() string {
 
-	return `package system
+	return `package {{.Pkg}}
 
 import (
-	"errors"
 	"github.com/gin-gonic/gin"
-	"github.com/go-playground/validator/v10"
 	"github.com/sonhineboy/gsadmin/service/app/models"
 	"github.com/sonhineboy/gsadmin/service/app/repositorys"
 	"github.com/sonhineboy/gsadmin/service/app/requests"
@@ -16,9 +14,9 @@ import (
 	"strconv"
 )
 
-type {{.Name | Title}}Controller struct{}
+type {{.Name | Transform}}Controller struct{}
 
-func (controller *{{.Name | Title}}Controller) Index(ctx *gin.Context) {
+func (controller *{{.Name | Transform}}Controller) Index(ctx *gin.Context) {
 
 	var (
 		params global.List
@@ -28,7 +26,7 @@ func (controller *{{.Name | Title}}Controller) Index(ctx *gin.Context) {
 	response.Success(ctx, "ok", re.Page(params.Where, params.Page, params.PageSize, "created_at"))
 }
 
-func (controller *{{.Name | Title}}Controller) Save(ctx *gin.Context) {
+func (controller *{{.Name | Transform}}Controller) Save(ctx *gin.Context) {
 	var (
 		data  requests.{{.Name |Title}}Request
 		err   error
@@ -49,7 +47,7 @@ func (controller *{{.Name | Title}}Controller) Save(ctx *gin.Context) {
 	response.Success(ctx, "ok", model)
 }
 
-func (controller *{{.Name | Title}}Controller) Edit(ctx *gin.Context) {
+func (controller *{{.Name | Transform}}Controller) Edit(ctx *gin.Context) {
 	var (
 		err          error
 		id           int
@@ -77,7 +75,7 @@ func (controller *{{.Name | Title}}Controller) Edit(ctx *gin.Context) {
 	response.Success(ctx, "ok", gin.H{"rows_Affected": rowsAffected})
 }
 
-func (controller *{{.Name | Title}}Controller) Delete(ctx *gin.Context) {
+func (controller *{{.Name | Transform}}Controller) Delete(ctx *gin.Context) {
 
 	var (
 		ids          requests.Delete{{.Name |Title}}Request
@@ -101,7 +99,7 @@ func (controller *{{.Name | Title}}Controller) Delete(ctx *gin.Context) {
 	return
 }
 
-func (controller *{{.Name | Title}}Controller) Get(ctx *gin.Context) {
+func (controller *{{.Name | Transform}}Controller) Get(ctx *gin.Context) {
 
 	var (
 		err   error

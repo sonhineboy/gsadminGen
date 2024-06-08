@@ -1,0 +1,5 @@
+package gsadminGen
+
+func TableTans() {
+
+}

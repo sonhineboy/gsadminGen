@@ -3,7 +3,11 @@ package gsadminGen
 import (
 	"fmt"
 	"github.com/sonhineboy/gsadminGen"
+	"github.com/sonhineboy/gsadminGen/pkg"
 	"os"
+	"path/filepath"
+	"regexp"
+	"strings"
 	"testing"
 )
 
@@ -14,7 +18,7 @@ func TestTitle(t *testing.T) {
 }
 
 func TestGenModel(t *testing.T) {
-	fields := []gsadminGen.Field{
+	fields := []pkg.Field{
 		{
 			Name:     "id",
 			Json:     "id",
@@ -49,7 +53,7 @@ func TestGenModel(t *testing.T) {
 			Transfer: "年龄",
 		},
 	}
-	err := gsadminGen.GenModel("./model.text", gsadminGen.TableModal{
+	err := gsadminGen.GenModel("./model.text", pkg.TableModal{
 		Name:   "test",
 		Fields: fields,
 	})
@@ -59,7 +63,7 @@ func TestGenModel(t *testing.T) {
 }
 
 func TestGenController(t *testing.T) {
-	fields := []gsadminGen.Field{
+	fields := []pkg.Field{
 		{
 			Name:     "userName",
 			Json:     "user_name",
@@ -83,10 +87,10 @@ func TestGenController(t *testing.T) {
 			Transfer: "年龄",
 		},
 	}
-	err := gsadminGen.GenController("./controller.text", gsadminGen.TableModal{
+	err := gsadminGen.GenController("./sss/controllexxx.text", pkg.TableModal{
 		Name:   "user",
 		Fields: fields,
-	})
+	}, "txss")
 	if err != nil {
 		t.Error("GenController Error:", err)
 	}
@@ -94,7 +98,7 @@ func TestGenController(t *testing.T) {
 
 func TestRequest(t *testing.T) {
 
-	fields := []gsadminGen.Field{
+	fields := []pkg.Field{
 		{
 			Name:     "userName",
 			Json:     "user_name",
@@ -119,7 +123,7 @@ func TestRequest(t *testing.T) {
 		},
 	}
 
-	err := gsadminGen.GenRequest("./request.text", gsadminGen.TableModal{
+	err := gsadminGen.GenRequest("./request.text", pkg.TableModal{
 		Name:   "user",
 		Fields: fields,
 	})
@@ -129,9 +133,9 @@ func TestRequest(t *testing.T) {
 }
 func TestRepository(t *testing.T) {
 
-	fields := []gsadminGen.Field{
+	fields := []pkg.Field{
 		{
-			Name:     "userName",
+			Name:     "user_name",
 			Json:     "user_name",
 			Default:  "",
 			Describe: "用户名",
@@ -154,8 +158,8 @@ func TestRepository(t *testing.T) {
 		},
 	}
 
-	err := gsadminGen.GenRepository("./repository", gsadminGen.TableModal{
-		Name:   "user",
+	err := gsadminGen.GenRepository("./repository", pkg.TableModal{
+		Name:   "user_member",
 		Fields: fields,
 	})
 	if err != nil {
@@ -182,20 +186,9 @@ func TestCreateFile(t *testing.T) {
 
 func TestMapping(t *testing.T) {
 
-	fields := []gsadminGen.Field{
+	fields := []pkg.Field{
 		{
-			Name:     "id",
-			Json:     "id",
-			Default:  "",
-			Describe: "Id",
-			Primary:  true,
-			Index:    "Null",
-			IsNull:   true,
-			Type:     "int",
-			Transfer: "Id",
-		},
-		{
-			Name:     "userName",
+			Name:     "user_name",
 			Json:     "user_name",
 			Default:  "",
 			Describe: "用户名",
@@ -223,4 +216,31 @@ func TestMapping(t *testing.T) {
 		fmt.Println(gsadminGen.TransFieldAll(g))
 
 	}
+}
+
+func TestDir(t *testing.T) {
+	path := "./aaa/ttt.txt"
+	fileInfo, err := os.Stat(filepath.Dir(path))
+
+	fmt.Println(err)
+
+	fmt.Printf("%v", fileInfo.IsDir())
+}
+func TestStringC(t *testing.T) {
+	s := "user_name"
+	matchRe := regexp.MustCompile("[-_]").FindString(s)
+
+	fmt.Println(matchRe)
+	if len(matchRe) > 0 {
+		strSlice := strings.Split(s, matchRe)
+		var str strings.Builder
+		for _, s2 := range strSlice {
+			str.Write([]byte(strings.Title(s2)))
+		}
+		fmt.Println(str.String())
+	}
+
+	fmt.Println(strings.Title(s))
+
+	fmt.Println(gsadminGen.UnderToConvertSoreLow(s))
 }

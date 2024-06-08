@@ -2,36 +2,21 @@ package gsadminGen
 
 import (
 	"fmt"
-	"github.com/sonhineboy/gsadminGen/src"
+	"github.com/sonhineboy/gsadminGen/pkg"
 	"github.com/sonhineboy/gsadminGen/tmp/svr"
 	"os"
+	"path/filepath"
 	"regexp"
 	"strings"
 	"text/template"
 )
 
-type Field struct {
-	Name     string
-	Json     string
-	Default  string
-	Describe string
-	Primary  bool
-	Index    string
-	IsNull   bool
-	Type     string
-	Transfer string
-}
-
-type TableModal struct {
-	Name   string
-	Fields []Field
-}
-
 // GenModel 生成模型结构体
-func GenModel(fileName string, v TableModal) error {
+func GenModel(fileName string, v pkg.TableModal) error {
 	myFunc := template.FuncMap{
 		"Title":         strings.Title,
 		"TransFieldAll": TransFieldAll,
+		"Transform":     UnderToConvertSore,
 	}
 	tmpl, err := template.New("model.sub").Funcs(myFunc).Parse(svr.GetModelSub())
 	if err != nil {
@@ -41,6 +26,10 @@ func GenModel(fileName string, v TableModal) error {
 	if err != nil {
 		return nil
 	}
+
+	defer func(wr *os.File) {
+		_ = wr.Close()
+	}(wr)
 	err = tmpl.Execute(wr, v)
 	if err != nil {
 		return err
@@ -48,28 +37,48 @@ func GenModel(fileName string, v TableModal) error {
 	return nil
 }
 
-func GenController(fileName string, v TableModal) error {
+//GenController 生成控制器
+func GenController(fileName string, v pkg.TableModal, pkgName string) error {
 	myFunc := template.FuncMap{
-		"Title": strings.Title,
+		"Title":     strings.Title,
+		"Transform": UnderToConvertSore,
 	}
 	tmpl, err := template.New("controller.sub").Funcs(myFunc).Parse(svr.GetControllerSub())
 	if err != nil {
 		return err
 	}
+
+	dir := filepath.Dir(fileName)
+	_, err = os.Stat(dir)
+	if err != nil && os.IsNotExist(err) {
+		err = os.MkdirAll(dir, 0755)
+		if err != nil {
+			return err
+		}
+	}
+
 	wr, err := os.Create(fileName)
 	if err != nil {
 		return nil
 	}
-	err = tmpl.Execute(wr, v)
+	defer func(wr *os.File) {
+		_ = wr.Close()
+	}(wr)
+
+	controllerVar := pkg.ControllerVar{TableModal: v, Pkg: pkgName}
+
+	err = tmpl.Execute(wr, controllerVar)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func GenRepository(fileName string, v TableModal) error {
+//GenRepository 生成业务仓储
+func GenRepository(fileName string, v pkg.TableModal) error {
 	myFunc := template.FuncMap{
-		"Title": strings.Title,
+		"Title":     strings.Title,
+		"Transform": UnderToConvertSore,
 	}
 	tmpl, err := template.New("repository.sub").Funcs(myFunc).Parse(svr.GetRepositorySub())
 	if err != nil {
@@ -79,6 +88,11 @@ func GenRepository(fileName string, v TableModal) error {
 	if err != nil {
 		return nil
 	}
+
+	defer func(wr *os.File) {
+		_ = wr.Close()
+	}(wr)
+
 	err = tmpl.Execute(wr, v)
 	if err != nil {
 		return err
@@ -86,11 +100,13 @@ func GenRepository(fileName string, v TableModal) error {
 	return nil
 }
 
-func GenRequest(fileName string, v TableModal) error {
+//GenRequest 生成请求结构体
+func GenRequest(fileName string, v pkg.TableModal) error {
 	myFunc := template.FuncMap{
-		"Title": strings.Title,
-		"Del":   TransDelRequest,
-		"Trans": TransRequest,
+		"Title":     strings.Title,
+		"Del":       TransDelRequest,
+		"Trans":     TransRequest,
+		"Transform": UnderToConvertSore,
 	}
 	tmpl, err := template.New("request.sub").Funcs(myFunc).Parse(svr.GetRequestSub())
 	if err != nil {
@@ -100,6 +116,11 @@ func GenRequest(fileName string, v TableModal) error {
 	if err != nil {
 		return nil
 	}
+
+	defer func(wr *os.File) {
+		_ = wr.Close()
+	}(wr)
+
 	err = tmpl.Execute(wr, v)
 	if err != nil {
 		return err
@@ -115,8 +136,30 @@ func ConvertToUnderScore(camelCaseName string) string {
 	return underScoreName
 }
 
-func TransRequest(field Field) string {
-	fieldType, ok := src.FieldTypeMapping[field.Type]
+//UnderToConvertSore 下划线转大驼峰
+func UnderToConvertSore(s string) string {
+	matchRe := regexp.MustCompile("[-_]").FindString(s)
+	if len(matchRe) > 0 {
+		strSlice := strings.Split(s, matchRe)
+		var str strings.Builder
+		for _, s2 := range strSlice {
+			str.Write([]byte(strings.Title(s2)))
+		}
+		return str.String()
+	} else {
+		return strings.Title(s)
+	}
+}
+
+//UnderToConvertSoreLow 下划线转小驼峰
+func UnderToConvertSoreLow(s string) string {
+	s = UnderToConvertSore(s)
+	return strings.ToLower(s[0:1]) + s[1:len(s)]
+}
+
+//TransRequest trans request
+func TransRequest(field pkg.Field) string {
+	fieldType, ok := pkg.FieldTypeMapping[field.Type]
 	if !ok {
 		fmt.Println("类型mapping 不存在")
 		return ""
@@ -128,7 +171,7 @@ func TransRequest(field Field) string {
 	}
 
 	return fmt.Sprint(
-		fmt.Sprintf("%-15s", strings.Title(field.Name)),
+		fmt.Sprintf("%-15s", UnderToConvertSore(field.Name)),
 		fmt.Sprintf("%-10s", fieldType),
 		"`",
 		"json:\"",
@@ -143,10 +186,10 @@ func TransDelRequest() string {
 }
 
 // TransFieldAll 字段转换
-func TransFieldAll(field Field) string {
+func TransFieldAll(field pkg.Field) string {
 	fieldName := ConvertToUnderScore(field.Name)
 
-	fieldType, ok := src.FieldTypeMapping[field.Type]
+	fieldType, ok := pkg.FieldTypeMapping[field.Type]
 	if !ok {
 		fmt.Println("类型mapping 不存在")
 		return ""
@@ -157,7 +200,7 @@ func TransFieldAll(field Field) string {
 		primary = "primaryKey;"
 	}
 
-	isNull := "not null"
+	isNull := "not null;"
 	if field.IsNull {
 		isNull = ""
 	}
@@ -173,15 +216,16 @@ func TransFieldAll(field Field) string {
 	}
 
 	index := ""
+	indexPrefix := "index:"
 	switch field.Index {
 	case "NORMAL":
-		index = fmt.Sprint("index:", fieldName, ";")
+		index = fmt.Sprint(indexPrefix, fieldName, ";")
 		break
 	case "UNIQUE":
-		index = fmt.Sprint("index:", fieldName, ",unique;")
+		index = fmt.Sprint(indexPrefix, fieldName, ",class:unique;")
 		break
 	case "FULLTEXT":
-		index = fmt.Sprint("index:", fieldName, ",class:fulltext;")
+		index = fmt.Sprint(indexPrefix, fieldName, ",class:fulltext;")
 		break
 	}
 
@@ -191,7 +235,7 @@ func TransFieldAll(field Field) string {
 	}
 
 	fieldSlice := []string{
-		fmt.Sprintf("%-15s", strings.Title(field.Name)),
+		fmt.Sprintf("%-15s", UnderToConvertSore(field.Name)),
 		fmt.Sprintf("%-10s", fieldType),
 		"`gorm:\"column:",
 		fieldName,
