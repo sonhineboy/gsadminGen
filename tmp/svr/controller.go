@@ -20,7 +20,7 @@ func (controller *{{.Name | Transform}}Controller) Index(ctx *gin.Context) {
 
 	var (
 		params global.List
-		re = repositorys.New{{.Name | Title}}Repository()
+		re = repositorys.New{{.Name | Transform}}Repository()
 	)
 	_ = ctx.ShouldBind(&params)
 	response.Success(ctx, "ok", re.Page(params.Where, params.Page, params.PageSize, "created_at"))
@@ -28,10 +28,10 @@ func (controller *{{.Name | Transform}}Controller) Index(ctx *gin.Context) {
 
 func (controller *{{.Name | Transform}}Controller) Save(ctx *gin.Context) {
 	var (
-		data  requests.{{.Name |Title}}Request
+		data  requests.{{.Name |Transform}}Request
 		err   error
-		model models.{{.Name | Title}}
-		re    = repositorys.New{{.Name | Title}}Repository()
+		model models.{{.Name | Transform}}
+		re    = repositorys.New{{.Name | Transform}}Repository()
 	)
 	err = ctx.ShouldBind(&data)
 	if err != nil {
@@ -51,8 +51,8 @@ func (controller *{{.Name | Transform}}Controller) Edit(ctx *gin.Context) {
 	var (
 		err          error
 		id           int
-		request      requests.{{.Name |Title}}Request
-		re           = repositorys.New{{.Name | Title}}Repository()
+		request      requests.{{.Name |Transform}}Request
+		re           = repositorys.New{{.Name | Transform}}Repository()
 		rowsAffected int64
 	)
 
@@ -78,10 +78,10 @@ func (controller *{{.Name | Transform}}Controller) Edit(ctx *gin.Context) {
 func (controller *{{.Name | Transform}}Controller) Delete(ctx *gin.Context) {
 
 	var (
-		ids          requests.Delete{{.Name |Title}}Request
+		ids          requests.Delete{{.Name |Transform}}Request
 		err          error
 		rowsAffected int64
-		re           = repositorys.New{{.Name | Title}}Repository()
+		re           = repositorys.New{{.Name | Transform}}Repository()
 	)
 
 	err = ctx.ShouldBind(&ids)
@@ -104,8 +104,8 @@ func (controller *{{.Name | Transform}}Controller) Get(ctx *gin.Context) {
 	var (
 		err   error
 		id    int
-		model models.{{.Name | Title}}
-		re    = repositorys.New{{.Name | Title}}Repository()
+		model models.{{.Name | Transform}}
+		re    = repositorys.New{{.Name | Transform}}Repository()
 	)
 
 	id, err = strconv.Atoi(ctx.Param("id"))

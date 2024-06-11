@@ -23,9 +23,9 @@ func New{{.Name | Transform}}Repository() *{{.Name | Transform}}Repository {
 }
 
 //FindById 根据id 查询信息
-func (re *{{.Name | Transform}}Repository) FindById(id int) (models.{{.Name | Title}}, error) {
+func (re *{{.Name | Transform}}Repository) FindById(id int) (models.{{.Name | Transform}}, error) {
 	var (
-		model models.{{.Name | Title}}
+		model models.{{.Name | Transform}}
 	)
 	tx := re.db.First(&model, id)
 
@@ -33,11 +33,11 @@ func (re *{{.Name | Transform}}Repository) FindById(id int) (models.{{.Name | Ti
 }
 
 //UpdateById 根据id 更新信息
-func (re *{{.Name | Transform}}Repository) UpdateById(id int, data requests.{{.Name | Title}}Request) (int64, error) {
+func (re *{{.Name | Transform}}Repository) UpdateById(id int, data requests.{{.Name | Transform}}Request) (int64, error) {
 	var (
-		model models.{{.Name | Title}}
+		model models.{{.Name | Transform}}
 	)
-	tx := re.db.Model(&model).Where("id = ?", id).Updates(models.{{.Name | Title}}{
+	tx := re.db.Model(&model).Where("id = ?", id).Updates(models.{{.Name | Transform}}{
 		{{range .Fields}}
 		{{ .Name | Transform}}:	data.{{ .Name | Transform}},
 		{{end}}
@@ -48,7 +48,7 @@ func (re *{{.Name | Transform}}Repository) UpdateById(id int, data requests.{{.N
 //DelByIds 根据id 删除数据
 func (re *{{.Name | Transform}}Repository) DelByIds(ids []int) (int64, error) {
 	var (
-		model models.{{.Name | Title}}
+		model models.{{.Name | Transform}}
 	)
 	tx := re.db.Delete(&model, ids)
 	return tx.RowsAffected, tx.Error
@@ -58,10 +58,10 @@ func (re *{{.Name | Transform}}Repository) DelByIds(ids []int) (int64, error) {
 func (re *{{.Name | Transform}}Repository) Page(where map[string]interface{}, page int, pageSize int, sortField string) map[string]interface{} {
 	var (
 		total  int64
-		data   []models.{{.Name | Title}}
+		data   []models.{{.Name | Transform}}
 		offSet int
 	)
-	db := global.Db.Model(&models.{{.Name | Title}}{})
+	db := global.Db.Model(&models.{{.Name | Transform}}{})
 
 	if where != nil && len(where) > 0 {
 		db.Where(where)
@@ -78,9 +78,9 @@ func (re *{{.Name | Transform}}Repository) Page(where map[string]interface{}, pa
 }
 
 //Insert 写入数据
-func (re *{{.Name | Transform}}Repository) Insert(data requests.{{.Name | Title}}Request) (model models.{{.Name | Title}}, err error) {
+func (re *{{.Name | Transform}}Repository) Insert(data requests.{{.Name | Transform}}Request) (model models.{{.Name | Transform}}, err error) {
 
-	model = models.{{.Name | Title}}{
+	model = models.{{.Name | Transform}}{
 		{{range .Fields}}{{ .Name | Transform}}:	data.{{ .Name | Transform}},
 		{{end}}
 	}
