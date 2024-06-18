@@ -11,6 +11,31 @@ import (
 	"testing"
 )
 
+var MyData = pkg.TableModal{Name: "userMember", Fields: []pkg.Field{
+	{
+		Name:     "userName",
+		Json:     "user_name",
+		Default:  "",
+		Describe: "用户名",
+		Primary:  false,
+		Index:    "FULLTEXT",
+		IsNull:   true,
+		Type:     "varchar",
+		Transfer: "用户名",
+	},
+	{
+		Name:     "age",
+		Json:     "age",
+		Default:  "0",
+		Describe: "年龄",
+		Primary:  false,
+		Index:    "Null",
+		IsNull:   true,
+		Type:     "int",
+		Transfer: "年龄",
+	},
+}}
+
 func TestTitle(t *testing.T) {
 
 	fmt.Println(fmt.Sprintf("%-5saaaa", "4563asdfasf"))
@@ -243,4 +268,43 @@ func TestStringC(t *testing.T) {
 	fmt.Println(strings.Title(s))
 
 	fmt.Println(gsadminGen.UnderToConvertSoreLow(s))
+}
+
+func TestDefer(t *testing.T) {
+
+	func() {
+		defer func() {
+			fmt.Println("-----")
+		}()
+	}()
+
+	defer func() {
+		fmt.Println(2222)
+	}()
+}
+
+func TestGenJs(t *testing.T) {
+
+	err := gsadminGen.GenApi("./userMember.js", MyData)
+	if err != nil {
+
+		t.Error(err)
+		return
+	}
+}
+
+func TestGenForm(t *testing.T) {
+	err := gsadminGen.GenForm("./form.vue", MyData)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+}
+
+func TestGenIndex(t *testing.T) {
+	err := gsadminGen.GenIndex("./index.vue", MyData)
+	if err != nil {
+		t.Error(err)
+		return
+	}
 }

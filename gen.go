@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/sonhineboy/gsadminGen/pkg"
 	"github.com/sonhineboy/gsadminGen/tmp/svr"
+	"github.com/sonhineboy/gsadminGen/tmp/web"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -37,6 +38,109 @@ func GenModel(fileName string, v pkg.TableModal) error {
 	return nil
 }
 
+func GenIndex(fileName string, v pkg.TableModal) error {
+	myFunc := template.FuncMap{
+		"UnderToConvertSoreLow": UnderToConvertSoreLow,
+	}
+	tmpl, err := template.New("api.sub").Funcs(myFunc).Parse(web.GetIndexSub())
+	if err != nil {
+		return err
+	}
+
+	if err = mkDirByFile(fileName); err != nil {
+		return err
+	}
+
+	wr, err := os.Create(fileName)
+	if err != nil {
+		return nil
+	}
+
+	defer func(wr *os.File) {
+		_ = wr.Close()
+	}(wr)
+
+	err = tmpl.Execute(wr, v)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func GenForm(fileName string, v pkg.TableModal) error {
+	myFunc := template.FuncMap{
+		"TransInt": TranInt,
+		"HasStr":   HasStr,
+	}
+	tmpl, err := template.New("api.sub").Funcs(myFunc).Parse(web.GetFormSub())
+	if err != nil {
+		return err
+	}
+
+	if err = mkDirByFile(fileName); err != nil {
+		return err
+	}
+
+	wr, err := os.Create(fileName)
+	if err != nil {
+		return nil
+	}
+
+	defer func(wr *os.File) {
+		_ = wr.Close()
+	}(wr)
+
+	err = tmpl.Execute(wr, v)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func GenApi(fileName string, v pkg.TableModal) error {
+
+	myFunc := template.FuncMap{
+		"GetUrl": GetUrl,
+	}
+
+	tmpl, err := template.New("api.sub").Funcs(myFunc).Parse(web.GetApiJsSub())
+	if err != nil {
+		return err
+	}
+
+	if err = mkDirByFile(fileName); err != nil {
+		return err
+	}
+
+	wr, err := os.Create(fileName)
+	if err != nil {
+		return nil
+	}
+
+	defer func(wr *os.File) {
+		_ = wr.Close()
+	}(wr)
+
+	err = tmpl.Execute(wr, v)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+//mkDirByFile 根据文件创建文件
+func mkDirByFile(fileName string) error {
+	dir := filepath.Dir(fileName)
+	_, err := os.Stat(dir)
+	if err != nil && os.IsNotExist(err) {
+		err = os.MkdirAll(dir, 0755)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 //GenController 生成控制器
 func GenController(fileName string, v pkg.TableModal, pkgName string) error {
 	myFunc := template.FuncMap{
@@ -48,13 +152,8 @@ func GenController(fileName string, v pkg.TableModal, pkgName string) error {
 		return err
 	}
 
-	dir := filepath.Dir(fileName)
-	_, err = os.Stat(dir)
-	if err != nil && os.IsNotExist(err) {
-		err = os.MkdirAll(dir, 0755)
-		if err != nil {
-			return err
-		}
+	if err = mkDirByFile(fileName); err != nil {
+		return err
 	}
 
 	wr, err := os.Create(fileName)
@@ -154,7 +253,7 @@ func UnderToConvertSore(s string) string {
 //UnderToConvertSoreLow 下划线转小驼峰
 func UnderToConvertSoreLow(s string) string {
 	s = UnderToConvertSore(s)
-	return strings.ToLower(s[0:1]) + s[1:len(s)]
+	return strings.ToLower(s[0:1]) + s[1:]
 }
 
 //TransRequest trans request
@@ -193,6 +292,13 @@ func TransFieldAll(field pkg.Field) string {
 	if !ok {
 		fmt.Println("类型mapping 不存在")
 		return ""
+	}
+
+	fieldDbType, ok := pkg.FieldDbMapping[field.Type]
+	if ok {
+		fieldDbType = fmt.Sprint("type:", fieldDbType, ";")
+	} else {
+		fieldDbType = ""
 	}
 
 	primary := ""
@@ -240,6 +346,7 @@ func TransFieldAll(field pkg.Field) string {
 		"`gorm:\"column:",
 		fieldName,
 		";",
+		fieldDbType,
 		primary,
 		autoInc,
 		index,
@@ -255,4 +362,20 @@ func TransFieldAll(field pkg.Field) string {
 
 	return strings.Join(fieldSlice, "")
 
+}
+
+func GetUrl(name string, action string) string {
+	return fmt.Sprint("`${config.API_URL}/", UnderToConvertSoreLow(name), "/", action, "`")
+}
+
+func TranInt(str string, types string) string {
+	if strings.Contains(types, "int") {
+		return str
+	} else {
+		return fmt.Sprint("\"", str, "\"")
+	}
+}
+
+func HasStr(str string, sub string) bool {
+	return strings.Contains(str, sub)
 }

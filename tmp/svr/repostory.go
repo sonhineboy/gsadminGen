@@ -63,6 +63,12 @@ func (re *{{.Name | Transform}}Repository) Page(where map[string]interface{}, pa
 	)
 	db := global.Db.Model(&models.{{.Name | Transform}}{})
 
+	for k, v := range where {
+		if len(v.(string)) == 0 {
+			delete(where, k)
+		}
+	}
+
 	if where != nil && len(where) > 0 {
 		db.Where(where)
 	}
@@ -72,7 +78,7 @@ func (re *{{.Name | Transform}}Repository) Page(where map[string]interface{}, pa
 		page = 1
 	}
 	offSet = (page - 1) * pageSize
-	db.Preload("Menus").Limit(pageSize).Order(sortField + " desc" + ",id desc").Offset(offSet)
+	db.Limit(pageSize).Order(sortField + " desc" + ",id desc").Offset(offSet)
 	db.Find(&data)
 	return global.Pages(page, pageSize, int(total), data)
 }
