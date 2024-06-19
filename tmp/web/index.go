@@ -39,14 +39,15 @@ func GetIndexSub() string {
         <el-table-column label="#" type="index" width="50"></el-table-column>
         <el-table-column label="ID" prop="id" width="50"></el-table-column>
         {{range $k,$v := .Fields}}
-		{{if eq $v.Type "image"}}
-				<el-table-column label="{{$v.Transform}}" prop="{{$v.Json}}">
-					<template #default="scope">
-						<el-image :src="scope.row.{{$v.Json}}" style="max-width: 50px"></el-image>
-				  	</template>
-				</el-table-column>
-		{{else}}
-		<el-table-column label="{{$v.Transform}}" prop="{{$v.Json}}"></el-table-column>
+			{{if eq $v.Type "image"}}
+					<el-table-column label="{{$v.Transform}}" prop="{{$v.Json}}">
+						<template #default="scope">
+							<el-image :src="scope.row.{{$v.Json}}" style="max-width: 50px"></el-image>
+						</template>
+					</el-table-column>
+			{{else}}
+			<el-table-column label="{{$v.Transform}}" prop="{{$v.Json}}"></el-table-column>
+			{{end}}
 		{{end}}
         <el-table-column label="时间" prop="created_at"></el-table-column>
         <el-table-column label="操作" fixed="right" width="100">
