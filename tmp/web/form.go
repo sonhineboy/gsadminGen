@@ -23,6 +23,8 @@ func GetFormSub() string {
 				<el-input-number v-model="form.{{$v.Json}}" :min="1"/>	
 				{{else if eq $v.Type "text"}}
 				<el-input  :autosize="{ minRows: 4, maxRows: 8 }" v-model="form.{{$v.Json}}" type="textarea" />
+				{{else if eq $v.Type "image"}}
+				<sc-upload v-model="form.{{$v.Json}}" title="上传图片"></sc-upload>
 				{{else}}
 			  	<el-input v-model="form.{{$v.Json}}" placeholder="{{$v.Describe}}"></el-input>
 				{{end}}

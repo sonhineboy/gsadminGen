@@ -11,6 +11,7 @@ var (
 		"float":     "float64",
 		"decimal":   "string",
 		"longtext":  "string",
+		"image":     "string",
 	}
 
 	FieldDbMapping = map[string]string{
