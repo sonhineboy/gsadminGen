@@ -139,7 +139,7 @@ export default {
       })
         .then(async () => {
           _that.loading = true;
-          let res = await _that.$API.userMember.delete.post({ ids: ids });
+          let res = await _that.$API.{{.Name | UnderToConvertSoreLow}}.delete.post({ ids: ids });
           _that.loading = false;
 
           if (res.code === 200) {
