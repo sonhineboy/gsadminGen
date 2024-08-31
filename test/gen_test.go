@@ -13,26 +13,26 @@ import (
 
 var MyData = pkg.TableModal{Name: "userMember", Fields: []pkg.Field{
 	{
-		Name:     "userName",
-		Json:     "user_name",
-		Default:  "",
-		Describe: "用户名",
-		Primary:  false,
-		Index:    "FULLTEXT",
-		IsNull:   true,
-		Type:     "varchar",
-		Transfer: "用户名",
+		Name:      "userName",
+		Json:      "user_name",
+		Default:   "",
+		Describe:  "用户名",
+		Primary:   false,
+		Index:     "FULLTEXT",
+		IsNull:    true,
+		Type:      "varchar",
+		Transform: "用户名",
 	},
 	{
-		Name:     "age",
-		Json:     "age",
-		Default:  "0",
-		Describe: "年龄",
-		Primary:  false,
-		Index:    "Null",
-		IsNull:   true,
-		Type:     "int",
-		Transfer: "年龄",
+		Name:      "age",
+		Json:      "age",
+		Default:   "0",
+		Describe:  "年龄",
+		Primary:   false,
+		Index:     "Null",
+		IsNull:    true,
+		Type:      "int",
+		Transform: "年龄",
 	},
 }}
 
@@ -45,37 +45,37 @@ func TestTitle(t *testing.T) {
 func TestGenModel(t *testing.T) {
 	fields := []pkg.Field{
 		{
-			Name:     "id",
-			Json:     "id",
-			Default:  "",
-			Describe: "Id",
-			Primary:  true,
-			Index:    "Null",
-			IsNull:   true,
-			Type:     "int",
-			Transfer: "Id",
+			Name:      "id",
+			Json:      "id",
+			Default:   "",
+			Describe:  "Id",
+			Primary:   true,
+			Index:     "Null",
+			IsNull:    true,
+			Type:      "int",
+			Transform: "Id",
 		},
 		{
-			Name:     "userName",
-			Json:     "user_name",
-			Default:  "",
-			Describe: "用户名",
-			Primary:  false,
-			Index:    "FULLTEXT",
-			IsNull:   true,
-			Type:     "varchar",
-			Transfer: "用户名",
+			Name:      "userName",
+			Json:      "user_name",
+			Default:   "",
+			Describe:  "用户名",
+			Primary:   false,
+			Index:     "FULLTEXT",
+			IsNull:    true,
+			Type:      "varchar",
+			Transform: "用户名",
 		},
 		{
-			Name:     "age",
-			Json:     "age",
-			Default:  "0",
-			Describe: "年龄",
-			Primary:  false,
-			Index:    "Null",
-			IsNull:   true,
-			Type:     "int",
-			Transfer: "年龄",
+			Name:      "age",
+			Json:      "age",
+			Default:   "0",
+			Describe:  "年龄",
+			Primary:   false,
+			Index:     "Null",
+			IsNull:    true,
+			Type:      "int",
+			Transform: "年龄",
 		},
 	}
 	err := gsadminGen.GenModel("./model.text", pkg.TableModal{
@@ -90,26 +90,26 @@ func TestGenModel(t *testing.T) {
 func TestGenController(t *testing.T) {
 	fields := []pkg.Field{
 		{
-			Name:     "userName",
-			Json:     "user_name",
-			Default:  "",
-			Describe: "用户名",
-			Primary:  false,
-			Index:    "FULLTEXT",
-			IsNull:   true,
-			Type:     "varchar",
-			Transfer: "用户名",
+			Name:      "userName",
+			Json:      "user_name",
+			Default:   "",
+			Describe:  "用户名",
+			Primary:   false,
+			Index:     "FULLTEXT",
+			IsNull:    true,
+			Type:      "varchar",
+			Transform: "用户名",
 		},
 		{
-			Name:     "age",
-			Json:     "age",
-			Default:  "0",
-			Describe: "年龄",
-			Primary:  false,
-			Index:    "Null",
-			IsNull:   true,
-			Type:     "int",
-			Transfer: "年龄",
+			Name:      "age",
+			Json:      "age",
+			Default:   "0",
+			Describe:  "年龄",
+			Primary:   false,
+			Index:     "Null",
+			IsNull:    true,
+			Type:      "int",
+			Transform: "年龄",
 		},
 	}
 	err := gsadminGen.GenController("./sss/controllexxx.text", pkg.TableModal{
@@ -125,26 +125,26 @@ func TestRequest(t *testing.T) {
 
 	fields := []pkg.Field{
 		{
-			Name:     "userName",
-			Json:     "user_name",
-			Default:  "",
-			Describe: "用户名",
-			Primary:  false,
-			Index:    "FULLTEXT",
-			IsNull:   true,
-			Type:     "varchar",
-			Transfer: "用户名",
+			Name:      "userName",
+			Json:      "user_name",
+			Default:   "",
+			Describe:  "用户名",
+			Primary:   false,
+			Index:     "FULLTEXT",
+			IsNull:    true,
+			Type:      "varchar",
+			Transform: "用户名",
 		},
 		{
-			Name:     "age",
-			Json:     "age",
-			Default:  "0",
-			Describe: "年龄",
-			Primary:  false,
-			Index:    "Null",
-			IsNull:   false,
-			Type:     "int",
-			Transfer: "年龄",
+			Name:      "age",
+			Json:      "age",
+			Default:   "0",
+			Describe:  "年龄",
+			Primary:   false,
+			Index:     "Null",
+			IsNull:    false,
+			Type:      "int",
+			Transform: "年龄",
 		},
 	}
 
@@ -160,26 +160,26 @@ func TestRepository(t *testing.T) {
 
 	fields := []pkg.Field{
 		{
-			Name:     "user_name",
-			Json:     "user_name",
-			Default:  "",
-			Describe: "用户名",
-			Primary:  false,
-			Index:    "FULLTEXT",
-			IsNull:   true,
-			Type:     "varchar",
-			Transfer: "用户名",
+			Name:      "user_name",
+			Json:      "user_name",
+			Default:   "",
+			Describe:  "用户名",
+			Primary:   false,
+			Index:     "FULLTEXT",
+			IsNull:    true,
+			Type:      "varchar",
+			Transform: "用户名",
 		},
 		{
-			Name:     "age",
-			Json:     "age",
-			Default:  "0",
-			Describe: "年龄",
-			Primary:  false,
-			Index:    "Null",
-			IsNull:   false,
-			Type:     "int",
-			Transfer: "年龄",
+			Name:      "age",
+			Json:      "age",
+			Default:   "0",
+			Describe:  "年龄",
+			Primary:   false,
+			Index:     "Null",
+			IsNull:    false,
+			Type:      "int",
+			Transform: "年龄",
 		},
 	}
 
@@ -213,26 +213,26 @@ func TestMapping(t *testing.T) {
 
 	fields := []pkg.Field{
 		{
-			Name:     "user_name",
-			Json:     "user_name",
-			Default:  "",
-			Describe: "用户名",
-			Primary:  false,
-			Index:    "FULLTEXT",
-			IsNull:   true,
-			Type:     "varchar",
-			Transfer: "用户名",
+			Name:      "user_name",
+			Json:      "user_name",
+			Default:   "",
+			Describe:  "用户名",
+			Primary:   false,
+			Index:     "FULLTEXT",
+			IsNull:    true,
+			Type:      "varchar",
+			Transform: "用户名",
 		},
 		{
-			Name:     "age",
-			Json:     "age",
-			Default:  "0",
-			Describe: "年龄",
-			Primary:  false,
-			Index:    "Null",
-			IsNull:   true,
-			Type:     "int",
-			Transfer: "年龄",
+			Name:      "age",
+			Json:      "age",
+			Default:   "0",
+			Describe:  "年龄",
+			Primary:   false,
+			Index:     "Null",
+			IsNull:    true,
+			Type:      "int",
+			Transform: "年龄",
 		},
 	}
 
@@ -307,4 +307,27 @@ func TestGenIndex(t *testing.T) {
 		t.Error(err)
 		return
 	}
+}
+
+func TestReader(t *testing.T) {
+	water := pkg.NewWriterRouter("./systemApi.txt", "//router gen start not delete", "xxx")
+	err := water.Write([]string{"", "\t\txxx", "\txxxxx"})
+	if err != nil {
+		t.Error(err)
+	}
+}
+
+func TestAb(t *testing.T) {
+
+	a := []string{"afasdfas", "fadsfadsf", "44444"}
+
+	befor := make([]string, len(a))
+	after := make([]string, len(a))
+	copy(befor, a[:1])
+	copy(after, a[1:])
+
+	fmt.Println(after[:2])
+	a = append(append(befor, "xxxxxxxx"), after...)
+
+	fmt.Println(a)
 }
