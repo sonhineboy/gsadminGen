@@ -14,6 +14,7 @@ var (
 )
 
 type WriterRouter struct {
+	Slices
 	Path         string
 	RouterFlag   string
 	PkgName      string
@@ -76,14 +77,6 @@ func (w *WriterRouter) writerPkg() error {
 	return nil
 }
 
-func (w *WriterRouter) append(slice []string, index int, context []string) []string {
-	var before = make([]string, index)
-	var after = make([]string, len(slice)-index)
-	copy(before, slice[:index])
-	copy(after, slice[index:])
-	return append(append(before, context...), after...)
-}
-
 func (w *WriterRouter) getAllPkg() string {
 	return fmt.Sprintf("\t\"github.com/sonhineboy/gsadmin/service/app/controllers/%s\"", w.PkgName)
 }
@@ -101,7 +94,7 @@ func (w *WriterRouter) writerRouter() error {
 		return routersNotErr
 	}
 
-	index := w.SliceIndex(w.RouterFlag)
+	index := w.SliceIndex(w.contextLines, w.RouterFlag)
 
 	if index == -1 {
 		return fmt.Errorf("%v flag:%s", routerFlagNotHasErr, w.RouterFlag)
@@ -134,14 +127,4 @@ func (w *WriterRouter) transFileContext() (err error) {
 		w.contextLines = strings.Split(string(w.context), "\n")
 	}
 	return err
-}
-
-//SliceIndex 查询str 在切片中索引，如果不存在返回 -1
-func (w *WriterRouter) SliceIndex(str string) int {
-	for i, line := range w.contextLines {
-		if strings.Contains(line, str) {
-			return i + 1
-		}
-	}
-	return -1
 }

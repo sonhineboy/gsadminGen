@@ -54,9 +54,6 @@ func SystemApiInit(r *gin.RouterGroup) {
 
 	//router gen start not delete
 
-		xxx
-	xxxxx
-
 	//gen_news
 
 	News := r.Group("/news")
