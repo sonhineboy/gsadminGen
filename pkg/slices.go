@@ -2,8 +2,7 @@ package pkg
 
 import "strings"
 
-type Slices struct {
-}
+type Slices struct{}
 
 func (w *Slices) append(slice []string, index int, context []string) []string {
 	var before = make([]string, index)
