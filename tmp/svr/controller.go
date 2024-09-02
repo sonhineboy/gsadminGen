@@ -22,7 +22,7 @@ func (controller *{{.Name | Transform}}Controller) Index(ctx *gin.Context) {
 		params global.List
 		re = repositorys.New{{.Name | Transform}}Repository()
 	)
-	_ = ctx.ShouldBind(&params)
+	_ = ctx.ShouldBindBodyWith(&params, binding.JSON)
 	response.Success(ctx, "ok", re.Page(params.Where, params.Page, params.PageSize, "created_at"))
 }
 
@@ -33,7 +33,7 @@ func (controller *{{.Name | Transform}}Controller) Save(ctx *gin.Context) {
 		model models.{{.Name | Transform}}
 		re    = repositorys.New{{.Name | Transform}}Repository()
 	)
-	err = ctx.ShouldBind(&data)
+	err = ctx.ShouldBindBodyWith(&data,binding.JSON)
 	if err != nil {
 		response.Failed(ctx, global.GetError(err, data))
 		return
@@ -62,7 +62,7 @@ func (controller *{{.Name | Transform}}Controller) Edit(ctx *gin.Context) {
 		return
 	}
 
-	err = ctx.ShouldBind(&request)
+	err = ctx.ShouldBindBodyWith(&request, binding.JSON)
 	if err != nil {
 		response.Failed(ctx, global.GetError(err, request))
 		return
@@ -84,7 +84,7 @@ func (controller *{{.Name | Transform}}Controller) Delete(ctx *gin.Context) {
 		re           = repositorys.New{{.Name | Transform}}Repository()
 	)
 
-	err = ctx.ShouldBind(&ids)
+	err = ctx.ShouldBindBodyWith(&ids, binding.JSON)
 	if err != nil {
 		response.Failed(ctx, global.GetError(err, ids))
 		return
