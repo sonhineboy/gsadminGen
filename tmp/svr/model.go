@@ -13,7 +13,7 @@ type {{.Name | Transform}} struct {
 }
 
 func (m *{{.Name | Transform}}) TableName() string {
-	return "{{.Name}}"
+	return fmt.Sprint(global.Config.Db.TablePrefix, "{{.Name}}")
 }
 `
 }

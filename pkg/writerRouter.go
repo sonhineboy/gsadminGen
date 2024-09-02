@@ -11,6 +11,7 @@ var (
 	contextNotErr       = errors.New("context is empty ")
 	routersNotErr       = errors.New("routers is empty ")
 	routerFlagNotHasErr = errors.New("router flag not has ")
+	routerHasErr        = errors.New("writer router is has ")
 )
 
 type WriterRouter struct {
@@ -99,6 +100,13 @@ func (w *WriterRouter) writerRouter() error {
 	if index == -1 {
 		return fmt.Errorf("%v flag:%s", routerFlagNotHasErr, w.RouterFlag)
 	}
+
+	index = w.SliceIndex(w.contextLines, w.routers[1])
+
+	if index != -1 {
+		return fmt.Errorf("%v flag:%s", routerHasErr, w.routers[1])
+	}
+
 	w.contextLines = w.append(w.contextLines, index, w.routers)
 	return nil
 

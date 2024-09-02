@@ -22,6 +22,11 @@ func NewWriterAutoModel(file, flag string) *WriterAutoModel {
 }
 
 func (w *WriterAutoModel) Write(str []string) error {
+	err := w.ReadFile()
+	if err != nil {
+		return fmt.Errorf("read %v", err)
+	}
+	w.TransSlice()
 	index := w.SliceIndex(w.ContentSlice, w.Flag)
 	if index == -1 {
 		return fmt.Errorf("not flag   %s ", w.Flag)
@@ -30,7 +35,7 @@ func (w *WriterAutoModel) Write(str []string) error {
 	w.ContentSlice = w.append(w.ContentSlice, index, str)
 	content := strings.Join(w.ContentSlice, "\n")
 
-	err := ioutil.WriteFile(w.File, []byte(content), 0644)
+	err = ioutil.WriteFile(w.File, []byte(content), 0644)
 	if err != nil {
 		return fmt.Errorf("Write   %v ", err)
 	}
