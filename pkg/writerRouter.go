@@ -101,9 +101,7 @@ func (w *WriterRouter) writerRouter() error {
 		return fmt.Errorf("%v flag:%s", routerFlagNotHasErr, w.RouterFlag)
 	}
 
-	index = w.SliceIndex(w.contextLines, w.routers[1])
-
-	if index != -1 {
+	if w.SliceIndex(w.contextLines, w.routers[1]) != -1 {
 		return fmt.Errorf("%v flag:%s", routerHasErr, w.routers[1])
 	}
 

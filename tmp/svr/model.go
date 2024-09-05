@@ -4,7 +4,10 @@ func GetModelSub() string {
 
 	return `package models
 
-import "github.com/sonhineboy/gsadmin/service/global"
+import (
+	"fmt"
+	"github.com/sonhineboy/gsadmin/service/global"
+)
 
 type {{.Name | Transform}} struct {
 	global.GAD_MODEL
