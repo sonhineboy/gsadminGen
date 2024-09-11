@@ -8,7 +8,6 @@ import (
 	"github.com/sonhineboy/gsadmin/service/app/models"
 	"github.com/sonhineboy/gsadmin/service/app/requests"
 	"github.com/sonhineboy/gsadmin/service/global"
-	"gorm.io/gorm"
 )
 
 type {{.Name | Transform}}Repository struct {
@@ -25,7 +24,7 @@ func (re *{{.Name | Transform}}Repository) FindById(id int) (models.{{.Name | Tr
 	var (
 		model models.{{.Name | Transform}}
 	)
-	tx := re.getDb.First(&model, id)
+	tx := re.getDb().First(&model, id)
 
 	return model, global.GormTans(tx.Error)
 }
@@ -35,7 +34,7 @@ func (re *{{.Name | Transform}}Repository) UpdateById(id int, data requests.{{.N
 	var (
 		model models.{{.Name | Transform}}
 	)
-	tx := re.getDb.Model(&model).Where("id = ?", id).Updates(models.{{.Name | Transform}}{
+	tx := re.getDb().Model(&model).Where("id = ?", id).Updates(models.{{.Name | Transform}}{
 		{{range .Fields}}
 		{{ .Name | Transform}}:	data.{{ .Name | Transform}},
 		{{end}}
@@ -48,7 +47,7 @@ func (re *{{.Name | Transform}}Repository) DelByIds(ids []int) (int64, error) {
 	var (
 		model models.{{.Name | Transform}}
 	)
-	tx := re.getDb.Delete(&model, ids)
+	tx := re.getDb().Delete(&model, ids)
 	return tx.RowsAffected, tx.Error
 }
 
@@ -89,7 +88,7 @@ func (re *{{.Name | Transform}}Repository) Insert(data requests.{{.Name | Transf
 		{{end}}
 	}
 
-	result := re.getDb.Create(&model)
+	result := re.getDb().Create(&model)
 	err = result.Error
 	return model, err
 }
